@@ -1,19 +1,20 @@
 //
-//  SplashScene.cpp
+//  MainScene.cpp
 //  PhysicsGame
 //
-//  Created by Chris Sherlock on 27/06/2016.
+//  Created by Chris Sherlock on 28/06/2016.
 //
 //
-#include "SplashScene.h"
 
-Scene* SplashScene::createScene()
+#include "MainScene.h"
+
+Scene* MainScene::createScene()
 {
     // 'scene' is an autorelease object
-    Scene *scene = Scene::create();
+    auto scene = Scene::create();
     
     // 'layer' is an autorelease object
-    auto layer = SplashScene::create();
+    auto layer = MainScene::create();
     
     // add layer as a child to scene
     scene->addChild(layer);
@@ -23,7 +24,7 @@ Scene* SplashScene::createScene()
 }
 
 // on "init" you need to initialize your instance
-bool SplashScene::init()
+bool MainScene::init()
 {
     //////////////////////////////
     // 1. super init first
@@ -31,9 +32,11 @@ bool SplashScene::init()
     {
         return false;
     }
+
     
+    m_physicsLayer = PhysicsLayer::createLayer();
+    this->addChild(m_physicsLayer);
+
     
     return true;
 }
-
-

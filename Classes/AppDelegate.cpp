@@ -1,5 +1,6 @@
 #include "AppDelegate.h"
 #include "SplashScene.h"
+#include "MainScene.h"
 
 USING_NS_CC;
 
@@ -75,7 +76,7 @@ bool AppDelegate::applicationDidFinishLaunching() {
     register_all_packages();
 
     // run
-    director->runWithScene(SplashScene::createScene());
+    director->runWithScene(MainScene::createScene());
 
     return true;
 }
