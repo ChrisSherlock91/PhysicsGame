@@ -34,7 +34,8 @@ bool PhysicsLayer::init()
     
     // Define the gravity vector.
     b2Vec2 gravity;
-    gravity.Set(0, -10.0f);//No gravity
+    gravity.Set(0, 0);
+    //gravity.Set(0, -10.0f);//No gravity
     
     // create a world object, which will hold and simulate the rigid bodies.
     m_world = new b2World(gravity);
@@ -57,8 +58,11 @@ void PhysicsLayer::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4& transf
 
 void PhysicsLayer::update(float delta)
 {
-    int velocityIterations = 5;
-    int positionIterations = 5;
+    float32 timeStep = 1/20.0;      //the length of time passed to simulate (seconds)
+    int32 velocityIterations = 8;   //how strongly to correct velocity
+    int32 positionIterations = 3;   //how strongly to correct position
+    
+    m_world->Step( timeStep, velocityIterations, positionIterations);
     
     // Instruct the world to perform a single step of simulation. It is
     // generally best to keep the time step and iterations fixed.
@@ -108,7 +112,7 @@ void PhysicsLayer::createBox(b2Vec2 position, b2Vec2 size)
     myBodyDef.position.Set(position.x * PTM, position.y * PTM); //set the starting position
     myBodyDef.angle = 0; //set the starting angle
     
-    b2Body* dynamicBody = m_world->CreateBody(&myBodyDef);
+    dynamicBody = m_world->CreateBody(&myBodyDef);
     
     b2PolygonShape boxShape;
     boxShape.SetAsBox(size.x * PTM, size.y * PTM);
@@ -129,7 +133,7 @@ void PhysicsLayer::createFloor(b2Vec2 position, b2Vec2 size)
     myBodyDef.type = b2BodyType::b2_staticBody; //this will be a dynamic body
     myBodyDef.position.Set(position.x * PTM, position.y * PTM); //set the starting position
     myBodyDef.angle = 0; //set the starting angle
-    b2Body* floorBody = m_world->CreateBody(&myBodyDef);
+    m_floorBody = m_world->CreateBody(&myBodyDef);
     
     b2PolygonShape boxShape;
     boxShape.SetAsBox(size.x * PTM, size.y * PTM);
@@ -140,37 +144,27 @@ void PhysicsLayer::createFloor(b2Vec2 position, b2Vec2 size)
     boxFixtureDef.restitution = 0;
     boxFixtureDef.friction = 1;
     
-    floorBody->CreateFixture(&boxFixtureDef);
+    m_floorBody->CreateFixture(&boxFixtureDef);
     
     b2BodyDef bodyDef;
     m_world->CreateBody(&bodyDef);
 }
 
-void PhysicsLayer::createArrow(b2Vec2 position)
-{
-    float angle = 70;
-    b2PolygonShape polygonShape;
-    b2Vec2 vertices[4];
-    vertices[0].Set(-1.4f, 0);
-    vertices[1].Set(0, -0.1f );
-    vertices[2].Set(0.6f, 0);
-    vertices[3].Set(0, 0.1f);
-    polygonShape.Set(vertices, 4);
-    b2BodyDef bodyDef;
-    bodyDef.angle = angle;
-    bodyDef.position.Set(200 * PTM, 200 * PTM);
-    bodyDef.type = b2BodyType::b2_dynamicBody;
-    
-    b2FixtureDef fixtureDef;
-    fixtureDef.shape = &polygonShape;
-    fixtureDef.density = 1;
-    fixtureDef.friction = 0.5f;
-    fixtureDef.restitution = 0.5f;
-    
-    b2Body *body = m_world->CreateBody(&bodyDef);
-    body->CreateFixture(&fixtureDef);
-    body->SetLinearVelocity(b2Vec2(2,2));
-}
 
+void PhysicsLayer::drawLine(Vec2 lastPos, Vec2 currentPos)
+{
+    float distance = ccpDistance(lastPos, currentPos);
+    if (distance > 1)
+    {
+        b2BodyDef bd;
+        bd.type = b2_staticBody;
+        bd.position.Set(0, 0);
+        b2Body* body = m_world->CreateBody(&bd);
+
+        b2EdgeShape shape;
+        shape.Set(b2Vec2(lastPos.x * PTM, lastPos.y * PTM), b2Vec2(currentPos.x * PTM, currentPos.y * PTM));
+        body->CreateFixture(&shape, 0.0f);
+    }
+}
 
 

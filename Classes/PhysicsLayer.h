@@ -29,8 +29,11 @@ public:
     
     void createBox(b2Vec2 position, b2Vec2 size);
     void createFloor(b2Vec2 position, b2Vec2 size);
-    void createArrow(b2Vec2 position);
-
+    
+    void drawLine(Vec2 lastPos, Vec2 currentPos);
+    
+    b2Body *dynamicBody;
+    b2Body *m_floorBody;
  
     b2World *m_world;
    

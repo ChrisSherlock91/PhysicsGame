@@ -35,15 +35,40 @@ bool MainScene::init()
     Size visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     
+    m_touchPoint = Vec2(0,0);
+    
     m_physicsLayer = PhysicsLayer::createLayer();
     this->addChild(m_physicsLayer);
     
     
     m_physicsLayer->createFloor(b2Vec2(0, visibleSize.height * 0.1), b2Vec2(visibleSize.width, visibleSize.height * 0.1));
-    m_physicsLayer->createBox(b2Vec2(visibleSize.width / 2, visibleSize.height / 2), b2Vec2(10,10));
-    m_physicsLayer->createArrow(b2Vec2(visibleSize.width * 0.1, visibleSize.height * 0.15));
+
+    auto listener = EventListenerTouchAllAtOnce::create();
+    listener->onTouchesBegan = CC_CALLBACK_2(MainScene::onTouchesBegan, this);
+    listener->onTouchesMoved = CC_CALLBACK_2(MainScene::onTouchesMoved, this);
+    listener->onTouchesEnded = CC_CALLBACK_2(MainScene::onTouchesEnded, this);
+    _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
     
     
+    m_drawNode = DrawNode::create();
+    this->addChild(m_drawNode, 10);//Make sure your z-order is large enough
     
     return true;
+}
+
+void MainScene::onTouchesBegan(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)
+{
+    log("---- Touch Began ----");
+}
+
+void MainScene::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)
+{    
+    cocos2d::Touch *touch = (*touches.begin());
+    m_physicsLayer->drawLine(touch->getPreviousLocation(), touch->getLocation());
+    m_drawNode->drawSegment(touch->getPreviousLocation(), touch->getLocation(), 2, Color4F::YELLOW);
+}
+
+void MainScene::onTouchesEnded(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)
+{
+    CCLOG("---- Touch Ended ----");
 }

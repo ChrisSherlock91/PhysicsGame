@@ -23,6 +23,15 @@ public:
     
     virtual bool init();
     
+    Vec2 m_touchPoint;
+    
+    DrawNode *m_drawNode;
+    
+    void onTouchesBegan(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
+    void onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
+    void onTouchesEnded(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
+    
+    
     // implement the "static create()" method manually
     CREATE_FUNC(MainScene);
 };
