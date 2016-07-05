@@ -20,6 +20,8 @@ class PhysicsLayer : public cocos2d::Layer
 private:
     void setDebugDraw(bool set);
     
+    Vec2 m_origin;
+    
 public:
     static PhysicsLayer* createLayer();
     
@@ -30,7 +32,8 @@ public:
     void createBox(b2Vec2 position, b2Vec2 size);
     void createFloor(b2Vec2 position, b2Vec2 size);
     
-    void drawLine(Vec2 lastPos, Vec2 currentPos);
+    void drawLine(std::vector<std::pair<Vec2, Vec2>> points);
+    
     
     b2Body *dynamicBody;
     b2Body *m_floorBody;

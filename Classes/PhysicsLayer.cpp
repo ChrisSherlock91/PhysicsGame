@@ -8,8 +8,8 @@
 
 #include "PhysicsLayer.h"
 
-#define MTP 30
-#define PTM 1/30.0f
+#define MTP 32.0
+#define PTM 1/32.0f
 
 PhysicsLayer* PhysicsLayer::createLayer()
 {
@@ -32,9 +32,11 @@ bool PhysicsLayer::init()
     
     this->scheduleUpdate();
     
+    m_origin = Vec2(0,0);//Director::getInstance()->getVisibleOrigin();
+    
     // Define the gravity vector.
     b2Vec2 gravity;
-    gravity.Set(0, 0);
+    gravity.Set(0, -7);
     //gravity.Set(0, -10.0f);//No gravity
     
     // create a world object, which will hold and simulate the rigid bodies.
@@ -151,20 +153,21 @@ void PhysicsLayer::createFloor(b2Vec2 position, b2Vec2 size)
 }
 
 
-void PhysicsLayer::drawLine(Vec2 lastPos, Vec2 currentPos)
+void PhysicsLayer::drawLine(std::vector<std::pair<Vec2, Vec2>> points)
 {
-    float distance = ccpDistance(lastPos, currentPos);
-    if (distance > 1)
-    {
-        b2BodyDef bd;
-        bd.type = b2_staticBody;
-        bd.position.Set(0, 0);
-        b2Body* body = m_world->CreateBody(&bd);
+    b2BodyDef bd;
+    bd.type = b2_staticBody;
+    bd.position.Set(0 * PTM, 0 * PTM);
+    b2Body* body = m_world->CreateBody(&bd);
 
+    for(std::vector<std::pair<Vec2, Vec2>>::iterator it = points.begin(); it != points.end(); ++it)
+    {
         b2EdgeShape shape;
-        shape.Set(b2Vec2(lastPos.x * PTM, lastPos.y * PTM), b2Vec2(currentPos.x * PTM, currentPos.y * PTM));
+        shape.Set(b2Vec2((*it).first.x / PTM, (*it).first.y / PTM), b2Vec2((*it).second.x / PTM, (*it).second.y / PTM));
         body->CreateFixture(&shape, 0.0f);
     }
+    
+    createBox(b2Vec2(300, 400), b2Vec2(10, 10));
 }
 
 

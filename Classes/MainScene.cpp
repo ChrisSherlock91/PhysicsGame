@@ -62,13 +62,15 @@ void MainScene::onTouchesBegan(const std::vector<cocos2d::Touch*>& touches, coco
 }
 
 void MainScene::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)
-{    
+{
     cocos2d::Touch *touch = (*touches.begin());
-    m_physicsLayer->drawLine(touch->getPreviousLocation(), touch->getLocation());
+    m_touchPositions.push_back(std::make_pair(touch->getPreviousLocation(), touch->getLocation()));
     m_drawNode->drawSegment(touch->getPreviousLocation(), touch->getLocation(), 2, Color4F::YELLOW);
 }
 
 void MainScene::onTouchesEnded(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)
 {
     CCLOG("---- Touch Ended ----");
+    m_physicsLayer->drawLine(m_touchPositions);
 }
+

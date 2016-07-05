@@ -32,6 +32,8 @@ public:
     void onTouchesEnded(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
     
     
+    std::vector<std::pair<Vec2, Vec2>> m_touchPositions;
+    
     // implement the "static create()" method manually
     CREATE_FUNC(MainScene);
 };
