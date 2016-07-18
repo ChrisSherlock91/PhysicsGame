@@ -30,6 +30,7 @@ bool PhysicsLayer::init()
         return false;
     }
     
+    m_shouldClearLevel = false;
     this->scheduleUpdate();
     
     m_origin = Vec2(0,0);//Director::getInstance()->getVisibleOrigin();
@@ -81,6 +82,8 @@ void PhysicsLayer::update(float delta)
             myActor->setRotation( -1 * CC_RADIANS_TO_DEGREES(b->GetAngle()) );
         }
     }
+    
+    checkForClearLevel();
 }
 
 void PhysicsLayer::setDebugDraw(bool set)
@@ -159,7 +162,8 @@ void PhysicsLayer::drawLine(std::vector<std::pair<Vec2, Vec2>> points)
     bd.type = b2_staticBody;
     bd.position.Set(0 * PTM, 0 * PTM);
     b2Body* body = m_world->CreateBody(&bd);
-
+    m_lineBodies.push_back(body);
+    
     for(std::vector<std::pair<Vec2, Vec2>>::iterator it = points.begin(); it != points.end(); ++it)
     {
         b2EdgeShape shape;
@@ -190,8 +194,27 @@ void PhysicsLayer::createBomb(b2Vec2 position)
     m_world->CreateBody(&bodyDef);
 }
 
+void PhysicsLayer::resetLevel()
+{
+    m_shouldClearLevel = true;
+    m_world->DestroyBody(m_bomb);
+}
+
 void PhysicsLayer::setBombActive()
 {
     m_bomb->SetType(b2_dynamicBody);
+}
+
+void PhysicsLayer::checkForClearLevel()
+{
+    if(m_shouldClearLevel)
+    {
+        for(std::vector<b2Body*>::iterator it = m_lineBodies.begin(); it != m_lineBodies.end(); ++it)
+        {
+            m_world->DestroyBody((*it));
+        }
+        m_lineBodies.clear();
+        m_shouldClearLevel = false;
+    }
 }
 

@@ -22,6 +22,8 @@ private:
     
     Vec2 m_origin;
     b2Body* m_bomb;
+    bool m_shouldClearLevel;
+    std::vector<b2Body*> m_lineBodies;
     
 public:
     static PhysicsLayer* createLayer();
@@ -30,9 +32,11 @@ public:
     virtual void update(float delta);
     virtual void draw(cocos2d::Renderer *renderer, const cocos2d::Mat4& transform, uint32_t flags);
 
+    void resetLevel();
+    void checkForClearLevel();
+    
     void createBox(b2Vec2 position, b2Vec2 size);
     void createFloor(b2Vec2 position, b2Vec2 size);
-    
     void setBombActive();
     void createBomb(b2Vec2 position);
     

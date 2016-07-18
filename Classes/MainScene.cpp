@@ -34,7 +34,7 @@ bool MainScene::init()
     }
     m_visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
-    
+    m_bombPosition = b2Vec2(m_visibleSize.width * 0.1f, m_visibleSize.height * 0.9);
     m_touchPoint = Vec2(0,0);
     
     m_physicsLayer = PhysicsLayer::createLayer();
@@ -49,12 +49,17 @@ bool MainScene::init()
     listener->onTouchesEnded = CC_CALLBACK_2(MainScene::onTouchesEnded, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
 
-    MenuItemSprite *menu_item1 = MenuItemSprite::create(Sprite::create("PlayBtn.png"), Sprite::create("PlayBtn.png"), CC_CALLBACK_1(MainScene::startLevel, this));
-    menu_item1->setPosition(Vec2(m_visibleSize.width * 0.95, m_visibleSize.height * 0.95));
-    menu_item1->setAnchorPoint(Vec2(1, 0.5f));
-    menu_item1->setScale(0.3f);
+    MenuItemSprite *playBtn = MenuItemSprite::create(Sprite::create("PlayBtn.png"), Sprite::create("PlayBtn.png"), CC_CALLBACK_1(MainScene::startLevel, this));
+    playBtn->setPosition(Vec2(m_visibleSize.width * 0.95, m_visibleSize.height * 0.95));
+    playBtn->setAnchorPoint(Vec2(1, 0.5f));
+    playBtn->setScale(0.3f);
     
-    auto *menu = Menu::create(menu_item1, NULL);
+    MenuItemSprite *retryBtn = MenuItemSprite::create(Sprite::create("RetryBtn.png"), Sprite::create("RetryBtn.png"), CC_CALLBACK_1(MainScene::resetLevel, this));
+    retryBtn->setPosition(Vec2(playBtn->getPositionX(), playBtn->getPositionY() - playBtn->getContentSize().height * 0.4f));
+    retryBtn->setAnchorPoint(playBtn->getAnchorPoint());
+    retryBtn->setScale(0.3f);
+    
+    auto *menu = Menu::create(playBtn, retryBtn, NULL);
     menu->setPosition(Point(0, 0));
     this->addChild(menu);
     
@@ -72,9 +77,17 @@ void MainScene::startLevel(cocos2d::Ref *pSender)
     m_physicsLayer->setBombActive();
 }
 
+void MainScene::resetLevel(cocos2d::Ref *pSender)
+{
+    m_touchPositions.clear();
+    m_physicsLayer->resetLevel();
+    m_drawNode->clear();
+    m_physicsLayer->createBomb(m_bombPosition);
+}
+
 void MainScene::createBomb()
 {
-    m_physicsLayer->createBomb(b2Vec2(m_visibleSize.width * 0.1, m_visibleSize.height * 0.9));
+    m_physicsLayer->createBomb(m_bombPosition);
 }
 
 void MainScene::onTouchesBegan(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)

@@ -18,6 +18,7 @@ class MainScene : public cocos2d::Layer
 private:
     PhysicsLayer* m_physicsLayer;
     Size m_visibleSize;
+    b2Vec2 m_bombPosition;
     
 public:
     static cocos2d::Scene* createScene();
@@ -33,6 +34,7 @@ public:
     void onTouchesEnded(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
     
     void createBomb();
+    void resetLevel(cocos2d::Ref *pSender);
     
     void startLevel(cocos2d::Ref *pSender);
     
