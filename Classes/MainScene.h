@@ -17,6 +17,7 @@ class MainScene : public cocos2d::Layer
 {
 private:
     PhysicsLayer* m_physicsLayer;
+    Size m_visibleSize;
     
 public:
     static cocos2d::Scene* createScene();
@@ -31,6 +32,9 @@ public:
     void onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
     void onTouchesEnded(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
     
+    void createBomb();
+    
+    void startLevel(cocos2d::Ref *pSender);
     
     std::vector<std::pair<Vec2, Vec2>> m_touchPositions;
     

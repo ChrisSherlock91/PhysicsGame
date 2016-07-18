@@ -60,11 +60,11 @@ void PhysicsLayer::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4& transf
 
 void PhysicsLayer::update(float delta)
 {
-    float32 timeStep = 1/20.0;      //the length of time passed to simulate (seconds)
+    //float32 timeStep = 1/20.0;      //the length of time passed to simulate (seconds)
     int32 velocityIterations = 8;   //how strongly to correct velocity
-    int32 positionIterations = 3;   //how strongly to correct position
+    int32 positionIterations = 1;   //how strongly to correct position
     
-    m_world->Step( timeStep, velocityIterations, positionIterations);
+    m_world->Step(delta, velocityIterations, positionIterations);
     
     // Instruct the world to perform a single step of simulation. It is
     // generally best to keep the time step and iterations fixed.
@@ -166,8 +166,32 @@ void PhysicsLayer::drawLine(std::vector<std::pair<Vec2, Vec2>> points)
         shape.Set(b2Vec2((*it).first.x / PTM, (*it).first.y / PTM), b2Vec2((*it).second.x / PTM, (*it).second.y / PTM));
         body->CreateFixture(&shape, 0.0f);
     }
-    
-    createBox(b2Vec2(300, 400), b2Vec2(10, 10));
 }
 
+void PhysicsLayer::createBomb(b2Vec2 position)
+{
+    b2BodyDef myBodyDef;
+    myBodyDef.type = b2BodyType::b2_kinematicBody;
+    myBodyDef.position.Set(position.x * PTM, position.y * PTM);
+    m_bomb = m_world->CreateBody(&myBodyDef);
+    
+    b2CircleShape circleShape;
+    circleShape.m_radius = 10 * PTM;
+    
+    b2FixtureDef circleFixtureDef;
+    circleFixtureDef.shape = &circleShape;
+    circleFixtureDef.density = 1;
+    circleFixtureDef.restitution = 0;
+    circleFixtureDef.friction = 1;
+    
+    m_bomb->CreateFixture(&circleFixtureDef);
+    
+    b2BodyDef bodyDef;
+    m_world->CreateBody(&bodyDef);
+}
+
+void PhysicsLayer::setBombActive()
+{
+    m_bomb->SetType(b2_dynamicBody);
+}
 

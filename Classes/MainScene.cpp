@@ -32,7 +32,7 @@ bool MainScene::init()
     {
         return false;
     }
-    Size visibleSize = Director::getInstance()->getVisibleSize();
+    m_visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     
     m_touchPoint = Vec2(0,0);
@@ -41,19 +41,40 @@ bool MainScene::init()
     this->addChild(m_physicsLayer);
     
     
-    m_physicsLayer->createFloor(b2Vec2(0, visibleSize.height * 0.1), b2Vec2(visibleSize.width, visibleSize.height * 0.1));
+    m_physicsLayer->createFloor(b2Vec2(0, m_visibleSize.height * 0.1), b2Vec2(m_visibleSize.width, m_visibleSize.height * 0.1));
 
     auto listener = EventListenerTouchAllAtOnce::create();
     listener->onTouchesBegan = CC_CALLBACK_2(MainScene::onTouchesBegan, this);
     listener->onTouchesMoved = CC_CALLBACK_2(MainScene::onTouchesMoved, this);
     listener->onTouchesEnded = CC_CALLBACK_2(MainScene::onTouchesEnded, this);
     _eventDispatcher->addEventListenerWithSceneGraphPriority(listener, this);
+
+    MenuItemSprite *menu_item1 = MenuItemSprite::create(Sprite::create("PlayBtn.png"), Sprite::create("PlayBtn.png"), CC_CALLBACK_1(MainScene::startLevel, this));
+    menu_item1->setPosition(Vec2(m_visibleSize.width * 0.95, m_visibleSize.height * 0.95));
+    menu_item1->setAnchorPoint(Vec2(1, 0.5f));
+    menu_item1->setScale(0.3f);
     
+    auto *menu = Menu::create(menu_item1, NULL);
+    menu->setPosition(Point(0, 0));
+    this->addChild(menu);
     
     m_drawNode = DrawNode::create();
-    this->addChild(m_drawNode, 10);//Make sure your z-order is large enough
+    this->addChild(m_drawNode, 10);
+    
+    createBomb();
     
     return true;
+}
+
+void MainScene::startLevel(cocos2d::Ref *pSender)
+{
+    CCLOG("--- Test ---");
+    m_physicsLayer->setBombActive();
+}
+
+void MainScene::createBomb()
+{
+    m_physicsLayer->createBomb(b2Vec2(m_visibleSize.width * 0.1, m_visibleSize.height * 0.9));
 }
 
 void MainScene::onTouchesBegan(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)

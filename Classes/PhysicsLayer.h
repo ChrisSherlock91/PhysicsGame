@@ -21,6 +21,7 @@ private:
     void setDebugDraw(bool set);
     
     Vec2 m_origin;
+    b2Body* m_bomb;
     
 public:
     static PhysicsLayer* createLayer();
@@ -28,9 +29,12 @@ public:
     virtual bool init();
     virtual void update(float delta);
     virtual void draw(cocos2d::Renderer *renderer, const cocos2d::Mat4& transform, uint32_t flags);
-    
+
     void createBox(b2Vec2 position, b2Vec2 size);
     void createFloor(b2Vec2 position, b2Vec2 size);
+    
+    void setBombActive();
+    void createBomb(b2Vec2 position);
     
     void drawLine(std::vector<std::pair<Vec2, Vec2>> points);
     
