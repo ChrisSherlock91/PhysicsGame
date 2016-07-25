@@ -11,6 +11,7 @@
 
 #include <stdio.h>
 #include "Box2D/Box2D.h"
+#include "AppUtils.h"
 
 class ContactListener : public b2ContactListener
 {
@@ -21,17 +22,9 @@ public:
     void BeginContact(b2Contact* contact);
     void EndContact(b2Contact* contact){};
     
-    enum EntityType { ET_BALL = 0, ET_TARGET };
-    
-    struct bodyUserData
-    {
-        EntityType entityType;
-    };
-    bodyUserData* myStruct = new bodyUserData;
-    
 private:
     
-    void handleContact(bodyUserData* bodyOne, bodyUserData* bodyTwo);
+    void handleContact(AppUtils::BodyUserData* bodyOne, AppUtils::BodyUserData* bodyTwo);
     
 };
 

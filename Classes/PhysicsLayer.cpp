@@ -112,7 +112,7 @@ void PhysicsLayer::setDebugDraw(bool set)
     }
 }
 
-void PhysicsLayer::createBox(b2Vec2 position, b2Vec2 size, ContactListener::EntityType type)
+void PhysicsLayer::createBox(b2Vec2 position, b2Vec2 size, AppUtils::EntityType type)
 {
     b2BodyDef myBodyDef;
     myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
@@ -121,7 +121,7 @@ void PhysicsLayer::createBox(b2Vec2 position, b2Vec2 size, ContactListener::Enti
    
     dynamicBody = m_world->CreateBody(&myBodyDef);
     
-    ContactListener::bodyUserData* myStruct = new ContactListener::bodyUserData;
+    AppUtils::BodyUserData* myStruct = new AppUtils::BodyUserData;
     myStruct->entityType = type;
     dynamicBody->SetUserData(myStruct);
     
@@ -185,8 +185,8 @@ void PhysicsLayer::createBomb(b2Vec2 position)
     myBodyDef.position.Set(position.x * PTM, position.y * PTM);
     m_bomb = m_world->CreateBody(&myBodyDef);
     
-    ContactListener::bodyUserData* myStruct = new ContactListener::bodyUserData;
-    myStruct->entityType = ContactListener::EntityType::ET_BALL;
+    AppUtils::BodyUserData* myStruct = new AppUtils::BodyUserData;
+    myStruct->entityType = AppUtils::EntityType::ET_BALL;
     m_bomb->SetUserData(myStruct);
     
     b2CircleShape circleShape;
@@ -206,7 +206,7 @@ void PhysicsLayer::createBomb(b2Vec2 position)
 
 void PhysicsLayer::createTarget(b2Vec2 position)
 {
-    createBox(position, b2Vec2(10, 10), ContactListener::EntityType::ET_TARGET);
+    createBox(position, b2Vec2(10, 10), AppUtils::EntityType::ET_TARGET);
 }
 
 void PhysicsLayer::resetLevel()

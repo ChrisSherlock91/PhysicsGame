@@ -38,7 +38,7 @@ public:
     void resetLevel();
     void checkForClearLevel();
     
-    void createBox(b2Vec2 position, b2Vec2 size, ContactListener::EntityType type);
+    void createBox(b2Vec2 position, b2Vec2 size, AppUtils::EntityType type);
     void createFloor(b2Vec2 position, b2Vec2 size);
     void setBombActive();
     void createBomb(b2Vec2 position);

@@ -13,16 +13,16 @@ void ContactListener::BeginContact(b2Contact *contact)
     void* bodyAUserData = contact->GetFixtureA()->GetBody()->GetUserData();
     void* bodyBUserData = contact->GetFixtureB()->GetBody()->GetUserData();
     if ( bodyAUserData && bodyBUserData )
-        handleContact(static_cast<bodyUserData*>( bodyAUserData ), static_cast<bodyUserData*>( bodyBUserData ) );
+        handleContact(static_cast<AppUtils::BodyUserData*>( bodyAUserData ), static_cast<AppUtils::BodyUserData*>( bodyBUserData ) );
 }
 
-void ContactListener::handleContact(ContactListener::bodyUserData *bodyOne, ContactListener::bodyUserData *bodyTwo)
+void ContactListener::handleContact(AppUtils::BodyUserData *bodyOne, AppUtils::BodyUserData *bodyTwo)
 {
-    if(bodyOne->entityType == EntityType::ET_BALL && bodyTwo->entityType == EntityType::ET_TARGET)
+    if(bodyOne->entityType == AppUtils::EntityType::ET_BALL && bodyTwo->entityType == AppUtils::EntityType::ET_TARGET)
     {
         int k = 0;
     }
-    else if(bodyOne->entityType == EntityType::ET_TARGET && bodyTwo->entityType == EntityType::ET_BALL)
+    else if(bodyOne->entityType == AppUtils::EntityType::ET_TARGET && bodyTwo->entityType == AppUtils::EntityType::ET_BALL)
     {
         int y = 0;
     }
