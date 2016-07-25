@@ -35,19 +35,21 @@ bool PhysicsLayer::init()
     
     m_origin = Vec2(0,0);//Director::getInstance()->getVisibleOrigin();
     
+    m_contactListener = new ContactListener();
+    
     // Define the gravity vector.
     b2Vec2 gravity;
     gravity.Set(0, -7);
-    //gravity.Set(0, -10.0f);//No gravity
     
     // create a world object, which will hold and simulate the rigid bodies.
     m_world = new b2World(gravity);
+    m_world->SetContactListener(m_contactListener);
     
     setDebugDraw(true);
     
-    
     return true;
 }
+
 void PhysicsLayer::draw(cocos2d::Renderer *renderer, const cocos2d::Mat4& transform, uint32_t flags)
 {
     cocos2d::Layer::draw(renderer, transform, flags);
@@ -76,10 +78,10 @@ void PhysicsLayer::update(float delta)
     {
         if (b->GetUserData() != NULL)
         {
-            // Synchronize the AtlasSprites position and rotation with the corresponding body
-            Sprite* myActor = (Sprite*)b->GetUserData();
-            myActor->setPosition( Vec2( b->GetPosition().x * 32, b->GetPosition().y * 32) );
-            myActor->setRotation( -1 * CC_RADIANS_TO_DEGREES(b->GetAngle()) );
+//            // Synchronize the AtlasSprites position and rotation with the corresponding body
+//            Sprite* myActor = (Sprite*)b->GetUserData();
+//            myActor->setPosition( Vec2( b->GetPosition().x * 32, b->GetPosition().y * 32) );
+//            myActor->setRotation( -1 * CC_RADIANS_TO_DEGREES(b->GetAngle()) );
         }
     }
     
@@ -110,14 +112,18 @@ void PhysicsLayer::setDebugDraw(bool set)
     }
 }
 
-void PhysicsLayer::createBox(b2Vec2 position, b2Vec2 size)
+void PhysicsLayer::createBox(b2Vec2 position, b2Vec2 size, ContactListener::EntityType type)
 {
     b2BodyDef myBodyDef;
     myBodyDef.type = b2_dynamicBody; //this will be a dynamic body
     myBodyDef.position.Set(position.x * PTM, position.y * PTM); //set the starting position
     myBodyDef.angle = 0; //set the starting angle
-    
+   
     dynamicBody = m_world->CreateBody(&myBodyDef);
+    
+    ContactListener::bodyUserData* myStruct = new ContactListener::bodyUserData;
+    myStruct->entityType = type;
+    dynamicBody->SetUserData(myStruct);
     
     b2PolygonShape boxShape;
     boxShape.SetAsBox(size.x * PTM, size.y * PTM);
@@ -179,6 +185,10 @@ void PhysicsLayer::createBomb(b2Vec2 position)
     myBodyDef.position.Set(position.x * PTM, position.y * PTM);
     m_bomb = m_world->CreateBody(&myBodyDef);
     
+    ContactListener::bodyUserData* myStruct = new ContactListener::bodyUserData;
+    myStruct->entityType = ContactListener::EntityType::ET_BALL;
+    m_bomb->SetUserData(myStruct);
+    
     b2CircleShape circleShape;
     circleShape.m_radius = 10 * PTM;
     
@@ -192,6 +202,11 @@ void PhysicsLayer::createBomb(b2Vec2 position)
     
     b2BodyDef bodyDef;
     m_world->CreateBody(&bodyDef);
+}
+
+void PhysicsLayer::createTarget(b2Vec2 position)
+{
+    createBox(position, b2Vec2(10, 10), ContactListener::EntityType::ET_TARGET);
 }
 
 void PhysicsLayer::resetLevel()

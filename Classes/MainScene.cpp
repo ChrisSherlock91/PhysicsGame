@@ -42,7 +42,8 @@ bool MainScene::init()
     
     
     m_physicsLayer->createFloor(b2Vec2(0, m_visibleSize.height * 0.1), b2Vec2(m_visibleSize.width, m_visibleSize.height * 0.1));
-
+    m_physicsLayer->createTarget(b2Vec2(m_visibleSize.width * 0.9, m_visibleSize.height * 0.2));
+    
     auto listener = EventListenerTouchAllAtOnce::create();
     listener->onTouchesBegan = CC_CALLBACK_2(MainScene::onTouchesBegan, this);
     listener->onTouchesMoved = CC_CALLBACK_2(MainScene::onTouchesMoved, this);
@@ -73,7 +74,6 @@ bool MainScene::init()
 
 void MainScene::startLevel(cocos2d::Ref *pSender)
 {
-    CCLOG("--- Test ---");
     m_physicsLayer->setBombActive();
 }
 
