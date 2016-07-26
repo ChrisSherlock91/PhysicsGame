@@ -21,7 +21,6 @@ private:
     b2Vec2 m_bombPosition;
     
     LayerColor* m_noDrawZone;
-    
 public:
     static cocos2d::Scene* createScene();
     
@@ -40,6 +39,8 @@ public:
     void startLevel(cocos2d::Ref *pSender);
     
     bool touchInsideNoDrawZone(Vec2 touchPoint);
+    
+    float getDistance(Vec2 pointOne, Vec2 pointTwo);
     
     std::vector<std::pair<Vec2, Vec2>> m_touchPositions;
     

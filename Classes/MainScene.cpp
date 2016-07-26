@@ -8,6 +8,8 @@
 
 #include "MainScene.h"
 
+#define DRAW_DISTANCE 40
+
 Scene* MainScene::createScene()
 {
     // 'scene' is an autorelease object
@@ -117,9 +119,19 @@ void MainScene::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, coco
     cocos2d::Touch *touch = (*touches.begin());
     if(!touchInsideNoDrawZone(touch->getLocation()))
     {
-        m_touchPositions.push_back(std::make_pair(touch->getPreviousLocation(), touch->getLocation()));
-        m_drawNode->drawSegment(touch->getPreviousLocation(), touch->getLocation(), 2, Color4F::YELLOW);
+        if(getDistance(touch->getPreviousLocation(), touch->getLocation()) < DRAW_DISTANCE)
+        {
+            m_touchPositions.push_back(std::make_pair(touch->getPreviousLocation(), touch->getLocation()));
+            m_drawNode->drawSegment(touch->getPreviousLocation(), touch->getLocation(), 2, Color4F::YELLOW);
+        }
     }
+}
+
+float MainScene::getDistance(Vec2 pointOne, Vec2 pointTwo)
+{
+    float diffY = pointOne.y - pointTwo.y;
+    float diffX = pointOne.x - pointTwo.x;
+    return sqrt((diffY * diffY) + (diffX * diffX));
 }
 
 void MainScene::onTouchesEnded(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)
