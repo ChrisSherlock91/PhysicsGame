@@ -20,6 +20,8 @@ private:
     Size m_visibleSize;
     b2Vec2 m_bombPosition;
     
+    LayerColor* m_noDrawZone;
+    
 public:
     static cocos2d::Scene* createScene();
     
@@ -35,8 +37,9 @@ public:
     
     void createBomb();
     void resetLevel(cocos2d::Ref *pSender);
-    
     void startLevel(cocos2d::Ref *pSender);
+    
+    bool touchInsideNoDrawZone(Vec2 touchPoint);
     
     std::vector<std::pair<Vec2, Vec2>> m_touchPositions;
     

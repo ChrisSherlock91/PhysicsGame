@@ -67,6 +67,11 @@ bool MainScene::init()
     m_drawNode = DrawNode::create();
     this->addChild(m_drawNode, 10);
     
+    m_noDrawZone = LayerColor::create(Color4B(255, 200, 200, 230));
+    m_noDrawZone->setPosition(Vec2(m_visibleSize.width * 0.2, m_visibleSize.height * 0.5));
+    m_noDrawZone->setContentSize(Size(100, 100));
+    this->addChild(m_noDrawZone, 100);
+    
     createBomb();
     
     return true;
@@ -90,16 +95,31 @@ void MainScene::createBomb()
     m_physicsLayer->createBomb(m_bombPosition);
 }
 
-void MainScene::onTouchesBegan(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)
+// Check if we are trying to draw inside a no draw area
+bool MainScene::touchInsideNoDrawZone(Vec2 touchPoint)
 {
-    log("---- Touch Began ----");
+    float x = m_noDrawZone->getPosition().x;
+    float y = m_noDrawZone->getPosition().y;
+    float width = m_noDrawZone->getContentSize().width;
+    float height = m_noDrawZone->getContentSize().height;
+    
+    if (touchPoint.x < (x + width) && touchPoint.x > x &&
+        touchPoint.y < (y + height) && touchPoint.y > y)
+        return true;
+    else
+        return false;
 }
+
+void MainScene::onTouchesBegan(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event) {}
 
 void MainScene::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)
 {
     cocos2d::Touch *touch = (*touches.begin());
-    m_touchPositions.push_back(std::make_pair(touch->getPreviousLocation(), touch->getLocation()));
-    m_drawNode->drawSegment(touch->getPreviousLocation(), touch->getLocation(), 2, Color4F::YELLOW);
+    if(!touchInsideNoDrawZone(touch->getLocation()))
+    {
+        m_touchPositions.push_back(std::make_pair(touch->getPreviousLocation(), touch->getLocation()));
+        m_drawNode->drawSegment(touch->getPreviousLocation(), touch->getLocation(), 2, Color4F::YELLOW);
+    }
 }
 
 void MainScene::onTouchesEnded(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)
