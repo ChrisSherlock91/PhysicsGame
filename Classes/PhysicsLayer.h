@@ -14,6 +14,7 @@
 #include "Box2D/Box2D.h"
 #include "GLES-Render.h"
 #include "ContactListener.h"
+
 USING_NS_CC;
 
 class PhysicsLayer : public cocos2d::Layer
@@ -37,15 +38,6 @@ public:
 
     void resetLevel();
     void checkForClearLevel();
-    
-    void createBox(b2Vec2 position, b2Vec2 size, AppUtils::EntityType type);
-    void createFloor(b2Vec2 position, b2Vec2 size);
-    void setBombActive();
-    void createBomb(b2Vec2 position);
-    void createTarget(b2Vec2 position);
-    
-    void drawLine(std::vector<std::pair<Vec2, Vec2>> points);
-    
     
     b2Body *dynamicBody;
     b2Body *m_floorBody;

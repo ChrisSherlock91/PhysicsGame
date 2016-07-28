@@ -7,6 +7,8 @@
 //
 
 #include "ContactListener.h"
+#include "Ball.h"
+#include "Target.h"
 
 void ContactListener::BeginContact(b2Contact *contact)
 {
@@ -20,10 +22,10 @@ void ContactListener::handleContact(AppUtils::BodyUserData *bodyOne, AppUtils::B
 {
     if(bodyOne->entityType == AppUtils::EntityType::ET_BALL && bodyTwo->entityType == AppUtils::EntityType::ET_TARGET)
     {
-        int k = 0;
+       
     }
     else if(bodyOne->entityType == AppUtils::EntityType::ET_TARGET && bodyTwo->entityType == AppUtils::EntityType::ET_BALL)
     {
-        int y = 0;
+        
     }
 }

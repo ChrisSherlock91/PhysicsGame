@@ -7,8 +7,9 @@
 //
 
 #include "MainScene.h"
+#include "PhysicsManager.h"
 
-#define DRAW_DISTANCE 40
+#define DRAW_DISTANCE 50
 
 Scene* MainScene::createScene()
 {
@@ -25,6 +26,11 @@ Scene* MainScene::createScene()
     return scene;
 }
 
+void MainScene::onExit()
+{
+    delete m_ball;
+}
+
 // on "init" you need to initialize your instance
 bool MainScene::init()
 {
@@ -36,15 +42,17 @@ bool MainScene::init()
     }
     m_visibleSize = Director::getInstance()->getVisibleSize();
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
-    m_bombPosition = b2Vec2(m_visibleSize.width * 0.1f, m_visibleSize.height * 0.9);
+    m_bombPosition = Vec2(m_visibleSize.width * 0.1f, m_visibleSize.height * 0.9);
     m_touchPoint = Vec2(0,0);
     
     m_physicsLayer = PhysicsLayer::createLayer();
     this->addChild(m_physicsLayer);
+   
+    m_ball = new Ball(m_bombPosition);
+    m_target = new Target(Vec2(m_visibleSize.width * 0.9, m_visibleSize.height * 0.3), Vec2(m_visibleSize.width * 0.03, m_visibleSize.height * 0.06));
     
-    
-    m_physicsLayer->createFloor(b2Vec2(0, m_visibleSize.height * 0.1), b2Vec2(m_visibleSize.width, m_visibleSize.height * 0.1));
-    m_physicsLayer->createTarget(b2Vec2(m_visibleSize.width * 0.9, m_visibleSize.height * 0.2));
+    // Create Floor
+    PhysicsManager::getInstance()->createStaticBody(Vec2(0, m_visibleSize.height * 0.1), Vec2(m_visibleSize.width, m_visibleSize.height * 0.1));
     
     auto listener = EventListenerTouchAllAtOnce::create();
     listener->onTouchesBegan = CC_CALLBACK_2(MainScene::onTouchesBegan, this);
@@ -73,28 +81,31 @@ bool MainScene::init()
     m_noDrawZone->setPosition(Vec2(m_visibleSize.width * 0.2, m_visibleSize.height * 0.5));
     m_noDrawZone->setContentSize(Size(100, 100));
     this->addChild(m_noDrawZone, 100);
-    
-    createBomb();
+        
+    m_emitter = ParticleExplosion::create();
+    m_emitter->setTexture( Director::getInstance()->getTextureCache()->addImage("stars.png"));
+    m_emitter->setAutoRemoveOnFinish(true);
+    m_emitter->setPosition(Vec2(m_visibleSize.width / 2, m_visibleSize.height / 2));
+    m_emitter->setTotalParticles(1000);
+    m_emitter->setLife(1.5);
+    m_emitter->setSpeed(500);
+    m_emitter->pause();
+    this->addChild(m_emitter, 10);
     
     return true;
 }
 
 void MainScene::startLevel(cocos2d::Ref *pSender)
 {
-    m_physicsLayer->setBombActive();
+    m_ball->setActive();
 }
 
 void MainScene::resetLevel(cocos2d::Ref *pSender)
 {
     m_touchPositions.clear();
-    m_physicsLayer->resetLevel();
+    PhysicsManager::getInstance()->resetLevel();
     m_drawNode->clear();
-    m_physicsLayer->createBomb(m_bombPosition);
-}
-
-void MainScene::createBomb()
-{
-    m_physicsLayer->createBomb(m_bombPosition);
+    m_ball->reset();
 }
 
 // Check if we are trying to draw inside a no draw area
@@ -136,7 +147,6 @@ float MainScene::getDistance(Vec2 pointOne, Vec2 pointTwo)
 
 void MainScene::onTouchesEnded(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)
 {
-    CCLOG("---- Touch Ended ----");
-    m_physicsLayer->drawLine(m_touchPositions);
+    PhysicsManager::getInstance()->drawLine(m_touchPositions);
 }
 

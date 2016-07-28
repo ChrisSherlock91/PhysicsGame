@@ -21,8 +21,6 @@ public:
     {
         EntityType entityType;
     };
-
-    
     
 private:
 

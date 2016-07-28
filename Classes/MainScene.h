@@ -12,19 +12,16 @@
 #include <stdio.h>
 #include "cocos2d.h"
 #include "PhysicsLayer.h"
+#include "Ball.h"
+#include "Target.h"
 
 class MainScene : public cocos2d::Layer
 {
-private:
-    PhysicsLayer* m_physicsLayer;
-    Size m_visibleSize;
-    b2Vec2 m_bombPosition;
-    
-    LayerColor* m_noDrawZone;
 public:
     static cocos2d::Scene* createScene();
     
     virtual bool init();
+    virtual void onExit();
     
     Vec2 m_touchPoint;
     
@@ -34,7 +31,6 @@ public:
     void onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
     void onTouchesEnded(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
     
-    void createBomb();
     void resetLevel(cocos2d::Ref *pSender);
     void startLevel(cocos2d::Ref *pSender);
     
@@ -46,6 +42,18 @@ public:
     
     // implement the "static create()" method manually
     CREATE_FUNC(MainScene);
+    
+private:
+    PhysicsLayer* m_physicsLayer;
+    Size m_visibleSize;
+    Vec2 m_bombPosition;
+    
+    ParticleSystemQuad* m_emitter;
+    
+    LayerColor* m_noDrawZone;
+    
+    Ball* m_ball;
+    Target* m_target;
 };
 
 
