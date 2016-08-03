@@ -12,6 +12,8 @@
 #include <stdio.h>
 #include "Box2D/Box2D.h"
 #include "AppUtils.h"
+#include "Ball.h"
+#include "Target.h"
 
 class ContactListener : public b2ContactListener
 {
@@ -23,9 +25,8 @@ public:
     void EndContact(b2Contact* contact){};
     
 private:
-    
-    void handleContact(AppUtils::BodyUserData* bodyOne, AppUtils::BodyUserData* bodyTwo);
-    
+    void handleContact(Entity* bodyOne, Entity* bodyTwo);
+    void fireCollisionType(Entity* bodyOne, Entity* bodyTwo, int type);
 };
 
 #endif /* ContactListener_h */

@@ -16,16 +16,18 @@ class AppUtils
 {
 public:
     enum EntityType { ET_BALL = 0, ET_TARGET };
-    
-    struct BodyUserData
-    {
-        EntityType entityType;
-    };
-    
-private:
+    enum CollisionType { CT_BALL_TARGET = 0 };
 
+private:
     
-    
+};
+
+// Used for collision callbacks
+class Entity
+{
+public:
+    virtual int getEntityType() = 0;
+    virtual void collisionOccoured(int type) = 0;
 };
 
 #endif /* AppUtils_h */

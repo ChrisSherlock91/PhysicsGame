@@ -12,14 +12,18 @@
 #include <stdio.h>
 #include "cocos2d.h"
 #include "Box2D/Box2D.h"
+#include "AppUtils.h"
 
 using namespace cocos2d;
 
-class Target
+class Target : public Entity
 {
 public:
     Target(Vec2 position, Vec2 size);
     ~Target();
+
+    void collisionOccoured(int type);
+    int getEntityType();
     
 private:
     b2Body* m_body;

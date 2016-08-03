@@ -13,7 +13,7 @@ Ball::Ball(Vec2 position)
 {
     m_position = position;
     m_body = PhysicsManager::getInstance()->createBall(m_position);
-    m_body->SetUserData(this);
+    m_body->SetUserData((Entity*)this);
 }
 
 Ball::~Ball()
@@ -30,4 +30,17 @@ void Ball::reset()
 {
     PhysicsManager::getInstance()->destroyBody(m_body);
     m_body = PhysicsManager::getInstance()->createBall(m_position);
+}
+
+int Ball::getEntityType()
+{
+    return AppUtils::EntityType::ET_BALL;
+}
+
+void Ball::collisionOccoured(int type)
+{
+    if(type == AppUtils::CollisionType::CT_BALL_TARGET)
+    {
+        // TDOD deal with win Scenario
+    }
 }

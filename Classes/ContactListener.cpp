@@ -7,25 +7,26 @@
 //
 
 #include "ContactListener.h"
-#include "Ball.h"
-#include "Target.h"
 
 void ContactListener::BeginContact(b2Contact *contact)
 {
     void* bodyAUserData = contact->GetFixtureA()->GetBody()->GetUserData();
     void* bodyBUserData = contact->GetFixtureB()->GetBody()->GetUserData();
     if ( bodyAUserData && bodyBUserData )
-        handleContact(static_cast<AppUtils::BodyUserData*>( bodyAUserData ), static_cast<AppUtils::BodyUserData*>( bodyBUserData ) );
+        handleContact(static_cast<Entity*>( bodyAUserData ), static_cast<Entity*>( bodyBUserData ));
 }
 
-void ContactListener::handleContact(AppUtils::BodyUserData *bodyOne, AppUtils::BodyUserData *bodyTwo)
+void ContactListener::handleContact(Entity* bodyOne, Entity* bodyTwo)
 {
-    if(bodyOne->entityType == AppUtils::EntityType::ET_BALL && bodyTwo->entityType == AppUtils::EntityType::ET_TARGET)
+    if((bodyOne->getEntityType() == AppUtils::EntityType::ET_BALL && bodyTwo->getEntityType() == AppUtils::ET_TARGET) ||
+       (bodyOne->getEntityType() == AppUtils::EntityType::ET_TARGET && bodyTwo->getEntityType() == AppUtils::ET_BALL))
     {
-       
+        fireCollisionType(bodyOne, bodyTwo, AppUtils::CollisionType::CT_BALL_TARGET);
     }
-    else if(bodyOne->entityType == AppUtils::EntityType::ET_TARGET && bodyTwo->entityType == AppUtils::EntityType::ET_BALL)
-    {
-        
-    }
+}
+
+void ContactListener::fireCollisionType(Entity *bodyOne, Entity *bodyTwo, int type)
+{
+    bodyOne->collisionOccoured(type);
+    bodyTwo->collisionOccoured(type);
 }
