@@ -48,8 +48,6 @@ private:
     Size m_visibleSize;
     Vec2 m_bombPosition;
     
-    ParticleSystemQuad* m_emitter;
-    
     LayerColor* m_noDrawZone;
     
     Ball* m_ball;

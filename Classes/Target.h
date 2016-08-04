@@ -16,7 +16,7 @@
 
 using namespace cocos2d;
 
-class Target : public Entity
+class Target : public Entity, public Node
 {
 public:
     Target(Vec2 position, Vec2 size);
@@ -28,7 +28,9 @@ public:
 private:
     b2Body* m_body;
     Vec2 m_position;
+    ParticleSystemQuad* m_emitter;
 };
+
 
 
 #endif /* Target_h */

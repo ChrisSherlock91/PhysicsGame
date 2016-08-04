@@ -140,10 +140,6 @@ b2Body* PhysicsManager::createBall(Vec2 position)
     myBodyDef.position.Set(position.x * PTM, position.y * PTM);
     bombBody = m_world->CreateBody(&myBodyDef);
     
-    AppUtils::BodyUserData* myStruct = new AppUtils::BodyUserData;
-    myStruct->entityType = AppUtils::EntityType::ET_BALL;
-    bombBody->SetUserData(myStruct);
-    
     b2CircleShape circleShape;
     circleShape.m_radius = 10 * PTM;
     
