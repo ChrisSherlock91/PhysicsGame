@@ -30,14 +30,14 @@ void Target::collisionOccoured(int type)
 {
     if(type == AppUtils::CollisionType::CT_BALL_TARGET)
     {
-        m_emitter = ParticleExplosion::create();
-        m_emitter->setTexture( Director::getInstance()->getTextureCache()->addImage("stars.png"));
-        m_emitter->setAutoRemoveOnFinish(true);
-        m_emitter->setPosition(m_position);
-        m_emitter->setTotalParticles(500);
-        m_emitter->setLife(1.5);
-        m_emitter->setSpeed(500);
-        this->addChild(m_emitter, 10);
+        ParticleExplosion* explosion = ParticleExplosion::create();
+        explosion->setTexture( Director::getInstance()->getTextureCache()->addImage("stars.png"));
+        explosion->setAutoRemoveOnFinish(true);
+        explosion->setPosition(m_position);
+        explosion->setTotalParticles(500);
+        explosion->setLife(1.5);
+        explosion->setSpeed(500);
+        this->addChild(explosion, 10);
     }
 }
 

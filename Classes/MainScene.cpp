@@ -44,6 +44,8 @@ bool MainScene::init()
     Vec2 origin = Director::getInstance()->getVisibleOrigin();
     m_bombPosition = Vec2(m_visibleSize.width * 0.1f, m_visibleSize.height * 0.9);
     m_touchPoint = Vec2(0,0);
+    m_currentDistanceDrawn = 0;
+    m_maxDrawAmount = 200;
     
     m_physicsLayer = PhysicsLayer::createLayer();
     this->addChild(m_physicsLayer);
@@ -53,7 +55,7 @@ bool MainScene::init()
     this->addChild(m_target);
     
     // Create Floor
-    PhysicsManager::getInstance()->createStaticBody(Vec2(0, m_visibleSize.height * 0.1), Vec2(m_visibleSize.width, m_visibleSize.height * 0.1));
+    PhysicsManager::getInstance()->createStaticBody(Vec2(0, m_visibleSize.height * 0.2), Vec2(m_visibleSize.width, m_visibleSize.height * 0.01));
     
     auto listener = EventListenerTouchAllAtOnce::create();
     listener->onTouchesBegan = CC_CALLBACK_2(MainScene::onTouchesBegan, this);
@@ -93,6 +95,7 @@ void MainScene::startLevel(cocos2d::Ref *pSender)
 
 void MainScene::resetLevel(cocos2d::Ref *pSender)
 {
+    m_currentDistanceDrawn = 0;
     m_touchPositions.clear();
     PhysicsManager::getInstance()->resetLevel();
     m_drawNode->clear();
@@ -121,7 +124,9 @@ void MainScene::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, coco
     cocos2d::Touch *touch = (*touches.begin());
     if(!touchInsideNoDrawZone(touch->getLocation()))
     {
-        if(getDistance(touch->getPreviousLocation(), touch->getLocation()) < DRAW_DISTANCE)
+        float distance = getDistance(touch->getPreviousLocation(), touch->getLocation());
+        m_currentDistanceDrawn += distance;
+        if(distance < DRAW_DISTANCE && checkDrawAmount())
         {
             m_touchPositions.push_back(std::make_pair(touch->getPreviousLocation(), touch->getLocation()));
             m_drawNode->drawSegment(touch->getPreviousLocation(), touch->getLocation(), 2, Color4F::YELLOW);
@@ -134,6 +139,14 @@ float MainScene::getDistance(Vec2 pointOne, Vec2 pointTwo)
     float diffY = pointOne.y - pointTwo.y;
     float diffX = pointOne.x - pointTwo.x;
     return sqrt((diffY * diffY) + (diffX * diffX));
+}
+
+bool MainScene::checkDrawAmount()
+{
+    log("-- Amount : %f --", m_currentDistanceDrawn);
+    if(m_currentDistanceDrawn < m_maxDrawAmount)
+        return true;
+    return false;
 }
 
 void MainScene::onTouchesEnded(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event)

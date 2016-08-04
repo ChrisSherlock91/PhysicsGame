@@ -52,6 +52,11 @@ private:
     
     Ball* m_ball;
     Target* m_target;
+    
+    float m_currentDistanceDrawn;
+    float m_maxDrawAmount;
+    
+    bool checkDrawAmount();
 };
 
 
