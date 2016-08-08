@@ -85,6 +85,14 @@ bool MainScene::init()
     m_noDrawZone->setContentSize(Size(100, 100));
     this->addChild(m_noDrawZone, 100);
     
+    // Create the loading bar
+    m_progressBar = cocos2d::ui::LoadingBar::create("sliderProgress.png");
+    m_progressBar->setPosition(Vec2(m_visibleSize.width / 2, m_visibleSize.height * 0.99));
+    m_progressBar->setDirection(cocos2d::ui::LoadingBar::Direction::LEFT);
+    m_progressBar->setPercent(100);
+    m_progressBar->setScale(2);
+    this->addChild(m_progressBar);
+    
     return true;
 }
 
@@ -96,10 +104,12 @@ void MainScene::startLevel(cocos2d::Ref *pSender)
 void MainScene::resetLevel(cocos2d::Ref *pSender)
 {
     m_currentDistanceDrawn = 0;
+    m_progressBarWidth = m_visibleSize.width * 0.4;
     m_touchPositions.clear();
     PhysicsManager::getInstance()->resetLevel();
     m_drawNode->clear();
     m_ball->reset();
+    m_progressBar->setPercent(100);
 }
 
 // Check if we are trying to draw inside a no draw area
@@ -126,6 +136,9 @@ void MainScene::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, coco
     {
         float distance = getDistance(touch->getPreviousLocation(), touch->getLocation());
         m_currentDistanceDrawn += distance;
+        float drawnPercent = (m_currentDistanceDrawn / m_maxDrawAmount);
+        m_progressBar->setPercent(100 - (drawnPercent*100));
+        
         if(distance < DRAW_DISTANCE && checkDrawAmount())
         {
             m_touchPositions.push_back(std::make_pair(touch->getPreviousLocation(), touch->getLocation()));
@@ -143,7 +156,6 @@ float MainScene::getDistance(Vec2 pointOne, Vec2 pointTwo)
 
 bool MainScene::checkDrawAmount()
 {
-    log("-- Amount : %f --", m_currentDistanceDrawn);
     if(m_currentDistanceDrawn < m_maxDrawAmount)
         return true;
     return false;
@@ -153,4 +165,3 @@ void MainScene::onTouchesEnded(const std::vector<cocos2d::Touch*>& touches, coco
 {
     PhysicsManager::getInstance()->drawLine(m_touchPositions);
 }
-

@@ -11,6 +11,8 @@
 
 #include <stdio.h>
 #include "cocos2d.h"
+#include "extensions/cocos-ext.h"
+#include "ui/CocosGUI.h"
 #include "PhysicsLayer.h"
 #include "Ball.h"
 #include "Target.h"
@@ -24,8 +26,6 @@ public:
     virtual void onExit();
     
     Vec2 m_touchPoint;
-    
-    DrawNode *m_drawNode;
     
     void onTouchesBegan(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
     void onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, cocos2d::Event* event);
@@ -47,15 +47,21 @@ private:
     PhysicsLayer* m_physicsLayer;
     Size m_visibleSize;
     Vec2 m_bombPosition;
+    Vec2 m_progressBarPosition;
     
     LayerColor* m_noDrawZone;
     
     Ball* m_ball;
     Target* m_target;
     
+    DrawNode* m_drawNode;
+    
+    cocos2d::ui::LoadingBar* m_progressBar;
+    
     float m_currentDistanceDrawn;
     float m_maxDrawAmount;
-    
+    float m_progressBarWidth;
+
     bool checkDrawAmount();
 };
 
