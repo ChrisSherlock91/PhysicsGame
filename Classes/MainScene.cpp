@@ -9,7 +9,7 @@
 #include "MainScene.h"
 #include "PhysicsManager.h"
 
-#define DRAW_DISTANCE 50
+#define DRAW_DISTANCE 100
 
 Scene* MainScene::createScene()
 {
@@ -45,7 +45,7 @@ bool MainScene::init()
     m_bombPosition = Vec2(m_visibleSize.width * 0.1f, m_visibleSize.height * 0.9);
     m_touchPoint = Vec2(0,0);
     m_currentDistanceDrawn = 0;
-    m_maxDrawAmount = 200;
+    m_maxDrawAmount = 400;
     
     m_physicsLayer = PhysicsLayer::createLayer();
     this->addChild(m_physicsLayer);
@@ -55,7 +55,7 @@ bool MainScene::init()
     this->addChild(m_target);
     
     // Create Floor
-    PhysicsManager::getInstance()->createStaticBody(Vec2(0, m_visibleSize.height * 0.2), Vec2(m_visibleSize.width, m_visibleSize.height * 0.01));
+    PhysicsManager::getInstance()->createStaticBody(Vec2(0, m_visibleSize.height * 0.2), Vec2(m_visibleSize.width, m_visibleSize.height * 0.02));
     
     auto listener = EventListenerTouchAllAtOnce::create();
     listener->onTouchesBegan = CC_CALLBACK_2(MainScene::onTouchesBegan, this);
@@ -82,7 +82,7 @@ bool MainScene::init()
     
     m_noDrawZone = LayerColor::create(Color4B(255, 200, 200, 230));
     m_noDrawZone->setPosition(Vec2(m_visibleSize.width * 0.2, m_visibleSize.height * 0.5));
-    m_noDrawZone->setContentSize(Size(100, 100));
+    m_noDrawZone->setContentSize(Size(200, 200));
     this->addChild(m_noDrawZone, 100);
     
     // Create the loading bar
@@ -92,6 +92,10 @@ bool MainScene::init()
     m_progressBar->setPercent(100);
     m_progressBar->setScale(2);
     this->addChild(m_progressBar);
+    
+    
+//    auto map = TMXTiledMap::create("LevelOne.tmx");
+//    this->addChild(map, 0);
     
     return true;
 }
@@ -142,7 +146,7 @@ void MainScene::onTouchesMoved(const std::vector<cocos2d::Touch*>& touches, coco
         if(distance < DRAW_DISTANCE && checkDrawAmount())
         {
             m_touchPositions.push_back(std::make_pair(touch->getPreviousLocation(), touch->getLocation()));
-            m_drawNode->drawSegment(touch->getPreviousLocation(), touch->getLocation(), 2, Color4F::YELLOW);
+            m_drawNode->drawSegment(touch->getPreviousLocation(), touch->getLocation(), 4, Color4F::YELLOW);
         }
     }
 }

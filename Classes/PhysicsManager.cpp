@@ -141,7 +141,7 @@ b2Body* PhysicsManager::createBall(Vec2 position)
     bombBody = m_world->CreateBody(&myBodyDef);
     
     b2CircleShape circleShape;
-    circleShape.m_radius = 10 * PTM;
+    circleShape.m_radius = 20 * PTM;
     
     b2FixtureDef circleFixtureDef;
     circleFixtureDef.shape = &circleShape;
